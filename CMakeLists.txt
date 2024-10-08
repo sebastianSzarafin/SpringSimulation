@@ -18,9 +18,19 @@ file(GLOB IMGUI_SOURCES ${IMGUI_PATH}/*.cpp)
 
 add_library(IMGUI STATIC ${IMGUI_SOURCES})
 
-# target_link_libraries(IMGUI PUBLIC ${SDL2_LIBRARIES})
-
 set(IMGUI_LIBRARIES IMGUI)
+# -------------------------------------------------------------------------
+
+# ------------------------------ INCLUDE IMPLOT ------------------------------
+set(IMPLOT_PATH "${PROJECT_SOURCE_DIR}/external/implot")
+
+file(GLOB IMPLOT_SOURCES ${IMPLOT_PATH}/*.cpp)
+
+add_library(IMPLOT STATIC ${IMPLOT_SOURCES})
+
+set(IMPLOT_LIBRARIES IMPLOT)
+
+target_include_directories(IMPLOT PUBLIC ${IMGUI_PATH})
 # -------------------------------------------------------------------------
 
 file(GLOB_RECURSE SOURCES ${PROJECT_SOURCE_DIR}/src/*.cc)
@@ -36,4 +46,5 @@ target_link_libraries(
     ${SDL2_LIBRARIES}
     ${GLM_LIBRARIES}
     ${IMGUI_LIBRARIES}
+    ${IMPLOT_LIBRARIES}
 )

@@ -20,4 +20,7 @@
 #include <external/imgui/imgui_impl_sdl2.h>
 #include <external/imgui/imgui_impl_sdlrenderer2.h>
 
+// implot
+#include <external/implot/implot.h>
+
 #endif // SYMFIZLAB1_PCH_HH

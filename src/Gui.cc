@@ -20,6 +20,7 @@ namespace sfl
     ImGui_ImplSDLRenderer2_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
+    ImPlot::DestroyContext();
   }
 
   void Gui::update()
@@ -29,6 +30,7 @@ namespace sfl
     ImGui::NewFrame();
 
     ImGui::ShowDemoWindow();
+    ImPlot::ShowDemoWindow();
 
     ImGui::Render();
   }
@@ -39,6 +41,7 @@ namespace sfl
   {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    ImPlot::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     (void)io;
 
