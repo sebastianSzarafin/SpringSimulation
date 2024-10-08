@@ -3,6 +3,8 @@
 
 #include "pch.hh"
 
+#include "Quad.hh"
+
 namespace sfl
 {
   class Renderer
@@ -20,7 +22,8 @@ namespace sfl
 
     void terminate();
     void clear();
-    void set_draw_color(glm::vec3 color) const;
+    void set_draw_color(glm::vec3& color) const;
+    void draw_quad(Quad& quad) const;
     void render();
 
     inline static SDL_Renderer* get_renderer() { return s_instance->m_renderer; }

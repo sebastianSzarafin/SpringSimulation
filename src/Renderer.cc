@@ -25,7 +25,7 @@ namespace sfl
     SDL_RenderClear(m_renderer);
   }
 
-  void Renderer::set_draw_color(glm::vec3 color) const
+  void Renderer::set_draw_color(glm::vec3& color) const
   {
     // Move color from normalized space to RGB space
     color *= SDL_COLOR_BASE;
@@ -34,17 +34,24 @@ namespace sfl
     SDL_SetRenderDrawColor(m_renderer, color.x, color.y, color.z, 255);
   }
 
+  void Renderer::draw_quad(Quad& quad) const
+  {
+    set_draw_color(quad.m_color);
+    int w = (int)quad.m_size.x;
+    int h = (int)quad.m_size.y;
+    int x = (int)quad.m_pos.x - w / 2;
+    int y = (int)quad.m_pos.y - h / 2;
+    SDL_Rect r{ x, y, w, h };
+    SDL_RenderFillRect(m_renderer, &r);
+  }
+
   void Renderer::render()
   {
     SDL_SetRenderTarget(m_renderer, NULL);
     SDL_RenderCopy(m_renderer, m_texture, NULL, NULL);
     SDL_RenderPresent(m_renderer);
     SDL_SetRenderTarget(m_renderer, m_texture);
-
-    //    SDL_RenderPresent(m_renderer);
-    //    SDL_Delay(10);
   }
-
   void Renderer::init()
   {
     m_renderer = SDL_CreateRenderer(Window::get_window(), -1, SDL_RENDERER_ACCELERATED);

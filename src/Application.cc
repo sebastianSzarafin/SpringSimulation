@@ -37,5 +37,9 @@ namespace sfl
     }
   }
 
-  void Application::update() {}
+  void Application::update()
+  {
+    Quad q{ { Window::get_width() / 2, Window::get_height() / 2 }, { 600, 600 }, { 1, 1, 1 } };
+    m_renderer->draw_quad(q);
+  }
 } // namespace sfl
