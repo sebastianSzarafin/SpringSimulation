@@ -36,6 +36,8 @@ target_include_directories(IMPLOT PUBLIC ${IMGUI_PATH})
 file(GLOB_RECURSE SOURCES ${PROJECT_SOURCE_DIR}/src/*.cc)
 
 include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/src)
+include_directories(${PROJECT_SOURCE_DIR}/src/TimedLoop)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 

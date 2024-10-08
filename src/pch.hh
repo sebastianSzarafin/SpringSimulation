@@ -1,11 +1,14 @@
 #ifndef SYMFIZLAB1_PCH_HH
 #define SYMFIZLAB1_PCH_HH
 
+#include <chrono>
+#include <functional>
 #include <map>
 #include <memory>
 #include <queue>
 #include <stdexcept>
 #include <string>
+#include <thread>
 
 // sdl2
 #include <SDL2/SDL.h>
