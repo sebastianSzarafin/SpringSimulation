@@ -5,6 +5,7 @@
 
 #include "Gui.hh"
 #include "Renderer.hh"
+#include "Timer.hh"
 #include "Window.hh"
 
 namespace sfl
@@ -15,6 +16,8 @@ namespace sfl
     std::unique_ptr<Window> m_window;
     std::unique_ptr<Renderer> m_renderer;
     std::unique_ptr<Gui> m_gui;
+
+    Timer m_timer;
 
    public:
     Application(Window::WindowData window_data);

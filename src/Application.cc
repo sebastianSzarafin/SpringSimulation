@@ -1,5 +1,7 @@
 #include "Application.hh"
 
+#define MIN_FRAME_RATE 16666667L
+
 namespace sfl
 {
   Application::Application(Window::WindowData window_data)
@@ -23,6 +25,15 @@ namespace sfl
     bool running = true;
     while (running)
     {
+      m_timer.tick();
+      if (m_timer.get_dt() < MIN_FRAME_RATE)
+      {
+        // wait that many ns
+        std::this_thread::sleep_for(std::chrono::nanoseconds(MIN_FRAME_RATE - m_timer.get_dt()));
+        continue;
+      }
+      else { m_timer.reset(); }
+
       m_window->update();
       if (m_window->is_window_closed()) { running = false; }
 

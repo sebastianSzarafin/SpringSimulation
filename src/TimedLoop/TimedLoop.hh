@@ -4,6 +4,7 @@
 #include "pch.hh"
 
 #include "Status.hh"
+#include "Timer.hh"
 
 namespace sfl
 {
@@ -23,17 +24,9 @@ namespace sfl
     void go(uint32_t loops);
 
    private:
-    /// @brief Get process time
-    /// @return process time in nanoseconds
-    uint64_t get_current_clock_ns();
-    /// @brief Calculate time that should be wait
-    /// @return time to wait in nanosecounds
-    int64_t calc_time_to_wait();
-    /// @brief When next loop should be called
-    uint64_t m_next_clock;
-
     /// @brief loop function
     std::function<void(void)> m_on_tick;
+    Timer m_timer;
     uint64_t m_period;
     Status& m_status;
   };
