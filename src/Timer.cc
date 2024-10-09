@@ -1,4 +1,5 @@
 #include "Timer.hh"
+#include "Clock.hh"
 
 namespace sfl
 {
@@ -6,10 +7,10 @@ namespace sfl
 
   void Timer::tick()
   {
-    auto current_time = std::chrono::high_resolution_clock::now();
+    auto current_time = Clock::chrono_now();
     m_delta_time =
         std::chrono::duration<uint64_t, std::chrono::nanoseconds::period>(current_time - m_start_time).count();
   }
 
-  void Timer::reset() { m_start_time = std::chrono::high_resolution_clock::now(); }
+  void Timer::reset() { m_start_time = Clock::chrono_now(); }
 } // namespace sfl

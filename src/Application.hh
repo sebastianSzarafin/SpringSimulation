@@ -5,6 +5,7 @@
 
 #include "Gui.hh"
 #include "Renderer.hh"
+#include "Spring.hh"
 #include "Timer.hh"
 #include "Window.hh"
 
@@ -18,6 +19,7 @@ namespace sfl
     std::unique_ptr<Gui> m_gui;
 
     Timer m_timer;
+    Spring m_spring;
 
    public:
     Application(Window::WindowData window_data);

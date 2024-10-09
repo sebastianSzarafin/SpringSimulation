@@ -3,10 +3,10 @@
 
 namespace sfl
 {
-  TimedLoop::TimedLoop(int period_in_ms, std::function<void(void)> func, Status& status) : m_status{ status }
+  TimedLoop::TimedLoop(int period_in_ms, std::function<void(void)> func, Status status) : m_status{ status }
   {
     m_on_tick = std::move(func);
-    m_period  = period_in_ms * MS_IN_NS; // convert to nanoseconds
+    m_period  = period_in_ms * NS_IN_MS; // convert to nanoseconds
   }
 
   void TimedLoop::go()
@@ -44,4 +44,6 @@ namespace sfl
       m_on_tick();
     }
   }
+
+  void TimedLoop::stop() { m_status = Status::exiting; }
 } // namespace sfl

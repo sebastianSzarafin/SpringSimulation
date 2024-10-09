@@ -16,19 +16,21 @@ namespace sfl
     /// @param period_in_ms loop m_period in milliseconds
     /// @param func function that should be called in loop
     /// @param status reference to controlling status
-    TimedLoop(int period_in_ms, std::function<void(void)> func, Status& status);
+    TimedLoop(int period_in_ms, std::function<void(void)> func, Status status);
     /// @brief start infinite loop
     void go();
     /// @brief start loop for specific cycle numbers
     /// @param loops how many cycles should be done
     void go(uint32_t loops);
+    /// @breif stops infinite loop
+    void stop();
 
    private:
     /// @brief loop function
     std::function<void(void)> m_on_tick;
     Timer m_timer;
     uint64_t m_period;
-    Status& m_status;
+    Status m_status;
   };
 } // namespace sfl
 
