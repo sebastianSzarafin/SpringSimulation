@@ -30,8 +30,15 @@ namespace sfl
   {
     Clock::init();
 
-    auto spring_loop = TimedLoop(SYM_PERIOD_IN_MS, [&]() { m_spring.update(SYM_PERIOD_IN_MS); }, Status::running);
-    std::thread spring_thread([&spring_loop]() { spring_loop.go(); });
+    auto simulation_loop = TimedLoop(
+        SYM_PERIOD_IN_MS,
+        [&]()
+        {
+          m_spring.update(SYM_PERIOD_IN_MS);
+          Plotter::update(m_spring);
+        },
+        Status::running);
+    std::thread simulation_thread([&simulation_loop]() { simulation_loop.go(); });
 
     bool running = true;
     while (running)
@@ -49,7 +56,7 @@ namespace sfl
       if (m_window->is_window_closed())
       {
         running = false;
-        spring_loop.stop();
+        simulation_loop.stop();
       }
 
       m_gui->update();
@@ -62,7 +69,7 @@ namespace sfl
       m_renderer->render();
     }
 
-    spring_thread.join();
+    simulation_thread.join();
   }
 
   void Application::update()
@@ -76,14 +83,13 @@ namespace sfl
     //
 
     // draw plots
-    Plotter::update();
     ImGui::SetNextWindowSize(ImVec2(500, 0), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(Window::get_width() - 500, 0), ImGuiCond_Once);
-    ImGui::Begin("##Spring plots", nullptr, ImGuiWindowFlags_NoTitleBar);
+    ImGui::Begin("##Simulation plots", nullptr, ImGuiWindowFlags_NoTitleBar);
     {
-      Plotter::draw_xt_vt_at_plot(m_spring);
-      Plotter::draw_ft_gt_ht_wt_plot(m_spring);
-      Plotter::draw_x_v_plot(m_spring);
+      Plotter::draw_xt_vt_at_plot();
+      Plotter::draw_ft_gt_ht_wt_plot();
+      Plotter::draw_x_v_plot();
     }
     ImGui::End();
     //
