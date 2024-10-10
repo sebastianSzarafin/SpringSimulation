@@ -11,6 +11,8 @@ namespace sfl
 
   static float w(float t) { return s_w0; }
   static float h(float t) { return s_h0; }
+
+  static const glm::vec4 s_world_treshold = { -10, 10, -10, 10 }; // {l, r, b, t}
 } // namespace sfl
 
 #endif // SYMFIZLAB1_CONSTANTS_HH

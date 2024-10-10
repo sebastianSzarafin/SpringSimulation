@@ -1,4 +1,5 @@
 #include "Renderer.hh"
+#include "Constants.hh"
 #include "Gui.hh"
 #include "Window.hh"
 
@@ -37,11 +38,11 @@ namespace sfl
   void Renderer::draw_quad(Quad& quad) const
   {
     set_draw_color(quad.m_color);
-    int w = (int)quad.m_size.x;
-    int h = (int)quad.m_size.y;
-    int x = (int)quad.m_pos.x - w / 2;
-    int y = (int)quad.m_pos.y - h / 2;
-    SDL_Rect r{ x, y, w, h };
+    int w       = (int)quad.m_size.x;
+    int h       = (int)quad.m_size.y;
+    auto [x, y] = quad.get_screen_pos();
+
+    SDL_Rect r{ (int)x - w / 2, (int)y - h / 2, w, h };
     SDL_RenderFillRect(m_renderer, &r);
   }
 

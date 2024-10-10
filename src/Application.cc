@@ -81,8 +81,10 @@ namespace sfl
     spring_velocities.push_back(spring_vel);
 
     // render spring
-    Quad q{ { Window::get_width() / 2, Window::get_height() / 2 + spring_pos * 100 }, { 600, 600 }, { 1, 1, 1 } };
-    m_renderer->draw_quad(q);
+    Quad q1{ { 0, spring_pos }, { 300, 100 }, { 1, 0, 0 } };
+    m_renderer->draw_quad(q1);
+    Quad q2{ { 0, s_world_treshold.w }, { 100, 2 * q1.get_screen_pos().second }, { 0, 1, 0 } };
+    m_renderer->draw_quad(q2);
     //
 
     ImGui::Begin("Position and Velocity over Time");
