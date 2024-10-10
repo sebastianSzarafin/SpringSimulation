@@ -8,7 +8,9 @@ namespace sfl
   class Plotter
   {
    public:
-    static void draw_plot1(Spring& spring); // x(t), v(t), a(t)
+    static void update();
+    static void draw_xt_vt_at_plot(Spring& spring);
+    static void draw_ft_gt_ht_wt_plot(Spring& spring);
   };
 } // namespace sfl
 

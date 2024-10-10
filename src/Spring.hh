@@ -14,6 +14,8 @@ namespace sfl
 
     void update(uint64_t dt);
 
+    float calc_f(float t);
+    float calc_g(float t);
     inline float get_x() const { return m_x; }
     inline float get_v() const { return m_v; }
     inline float get_a() const { return m_a; }

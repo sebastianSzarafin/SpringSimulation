@@ -1,47 +1,90 @@
 #include "Plotter.hh"
 #include "Clock.hh"
+#include "Constants.hh"
 
 #define PLOT_TIME_PERIOD 10
 
 namespace sfl
 {
   std::vector<float> time_stamps{};
-  std::vector<float> spring_positions{};
-  std::vector<float> spring_velocities{};
-  std::vector<float> spring_accelerations{};
-  float spring_plot1_y_max = FLT_MIN;
 
-  void Plotter::draw_plot1(sfl::Spring& spring)
+  std::vector<float> positions{};
+  std::vector<float> velocities{};
+  std::vector<float> accelerations{};
+  float plot1_y_max = FLT_MIN;
+
+  std::vector<float> fts{};
+  std::vector<float> gts{};
+  std::vector<float> hts{};
+  std::vector<float> wts{};
+  float plot2_y_max = FLT_MIN;
+
+  void Plotter::update()
   {
     float time = Clock::now();
     time_stamps.push_back(time);
-    float spring_pos   = spring.get_x();
-    spring_plot1_y_max = std::max(spring_plot1_y_max, abs(spring_pos));
-    spring_positions.push_back(spring_pos);
-    float spring_vel   = spring.get_v();
-    spring_plot1_y_max = std::max(spring_plot1_y_max, abs(spring_vel));
-    spring_velocities.push_back(spring_vel);
-    float spring_acc   = spring.get_a();
-    spring_plot1_y_max = std::max(spring_plot1_y_max, abs(spring_acc));
-    spring_accelerations.push_back(spring_acc);
 
     float history = time_stamps[0];
     if (time - history >= PLOT_TIME_PERIOD)
     {
       time_stamps.clear();
-      spring_positions.clear();
-      spring_velocities.clear();
-      spring_accelerations.clear();
+      positions.clear();
+      velocities.clear();
+      accelerations.clear();
     }
+  }
+
+  void Plotter::draw_xt_vt_at_plot(Spring& spring)
+  {
+    float spring_pos = spring.get_x();
+    plot1_y_max      = std::max(plot1_y_max, abs(spring_pos));
+    positions.push_back(spring_pos);
+    float spring_vel = spring.get_v();
+    plot1_y_max      = std::max(plot1_y_max, abs(spring_vel));
+    velocities.push_back(spring_vel);
+    float spring_acc = spring.get_a();
+    plot1_y_max      = std::max(plot1_y_max, abs(spring_acc));
+    accelerations.push_back(spring_acc);
 
     ImGui::Begin("Position and Velocity over Time");
     if (ImPlot::BeginPlot("##Plot1", ImVec2(-1, 0), ImPlotFlags_NoTitle))
     {
+      float history = time_stamps[0];
       ImPlot::SetupAxisLimits(ImAxis_X1, history, history + PLOT_TIME_PERIOD, ImGuiCond_Always);
-      ImPlot::SetupAxisLimits(ImAxis_Y1, -(spring_plot1_y_max + 1), spring_plot1_y_max + 1, ImGuiCond_Always);
-      ImPlot::PlotLine("Position x(t)", &time_stamps[0], &spring_positions[0], time_stamps.size());
-      ImPlot::PlotLine("Velocity v(t)", &time_stamps[0], &spring_velocities[0], time_stamps.size());
-      ImPlot::PlotLine("Acceleration a(t)", &time_stamps[0], &spring_accelerations[0], time_stamps.size());
+      ImPlot::SetupAxisLimits(ImAxis_Y1, -(plot1_y_max + 1), plot1_y_max + 1, ImGuiCond_Always);
+      ImPlot::PlotLine("Position x(t)", &time_stamps[0], &positions[0], time_stamps.size());
+      ImPlot::PlotLine("Velocity v(t)", &time_stamps[0], &velocities[0], time_stamps.size());
+      ImPlot::PlotLine("Acceleration a(t)", &time_stamps[0], &accelerations[0], time_stamps.size());
+      ImPlot::EndPlot();
+    }
+    ImGui::End();
+  }
+  void Plotter::draw_ft_gt_ht_wt_plot(Spring& spring)
+  {
+    float t     = time_stamps.back();
+    float f     = spring.calc_f(t);
+    plot2_y_max = std::max(plot2_y_max, abs(f));
+    fts.push_back(f);
+    float g     = spring.calc_g(t);
+    plot2_y_max = std::max(plot2_y_max, abs(g));
+    gts.push_back(g);
+    float h     = calc_h(t);
+    plot2_y_max = std::max(plot2_y_max, abs(f));
+    hts.push_back(h);
+    float w     = calc_w(t);
+    plot2_y_max = std::max(plot2_y_max, abs(w));
+    wts.push_back(h);
+
+    ImGui::Begin("Forces over Time");
+    if (ImPlot::BeginPlot("##Plot2", ImVec2(-1, 0), ImPlotFlags_NoTitle))
+    {
+      float history = time_stamps[0];
+      ImPlot::SetupAxisLimits(ImAxis_X1, history, history + PLOT_TIME_PERIOD, ImGuiCond_Always);
+      ImPlot::SetupAxisLimits(ImAxis_Y1, -(plot2_y_max + 1), plot2_y_max + 1, ImGuiCond_Always);
+      ImPlot::PlotLine("f(t)", &time_stamps[0], &fts[0], time_stamps.size());
+      ImPlot::PlotLine("g(t)", &time_stamps[0], &gts[0], time_stamps.size());
+      ImPlot::PlotLine("h(t)", &time_stamps[0], &hts[0], time_stamps.size());
+      ImPlot::PlotLine("w(t)", &time_stamps[0], &wts[0], time_stamps.size());
       ImPlot::EndPlot();
     }
     ImGui::End();
