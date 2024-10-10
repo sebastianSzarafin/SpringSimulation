@@ -10,6 +10,7 @@ namespace sfl
   std::vector<float> time_stamps{};
   std::vector<float> spring_positions{};
   std::vector<float> spring_velocities{};
+  std::vector<float> spring_accelerations{};
   float spring_plot1_y_max = FLT_MIN;
 
   Application::Application(Window::WindowData window_data)
@@ -79,6 +80,9 @@ namespace sfl
     float spring_vel   = m_spring.get_v();
     spring_plot1_y_max = std::max(spring_plot1_y_max, abs(spring_vel));
     spring_velocities.push_back(spring_vel);
+    float spring_acc   = m_spring.get_a();
+    spring_plot1_y_max = std::max(spring_plot1_y_max, abs(spring_acc));
+    spring_accelerations.push_back(spring_acc);
 
     // render spring
     Quad q1{ { 0, spring_pos }, { 300, 100 }, { 1, 0, 0 } };
@@ -94,6 +98,7 @@ namespace sfl
       ImPlot::SetupAxisLimits(ImAxis_Y1, -(spring_plot1_y_max + 1), spring_plot1_y_max + 1, ImGuiCond_Always);
       ImPlot::PlotLine("Position x(t)", &time_stamps[0], &spring_positions[0], time_stamps.size());
       ImPlot::PlotLine("Velocity v(t)", &time_stamps[0], &spring_velocities[0], time_stamps.size());
+      ImPlot::PlotLine("Acceleration a(t)", &time_stamps[0], &spring_accelerations[0], time_stamps.size());
       ImPlot::EndPlot();
     }
     ImGui::End();

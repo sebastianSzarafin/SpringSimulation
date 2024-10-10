@@ -16,6 +16,7 @@ namespace sfl
 
     inline float get_x() const { return m_x; }
     inline float get_v() const { return m_v; }
+    inline float get_a() const { return m_a; }
 
    private:
     float dxdt(float v);
@@ -29,6 +30,7 @@ namespace sfl
 
     float m_x; // position
     float m_v; // velocity
+    float m_a; // acceleration
   };
 } // namespace sfl
 

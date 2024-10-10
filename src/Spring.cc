@@ -25,6 +25,7 @@ namespace sfl
 
     m_x += dt_ms / 6.f * (k1x + 2.f * k2x + 2.f * k3x + k4x);
     m_v += dt_ms / 6.f * (k1v + 2.f * k2v + 2.f * k3v + k4v);
+    m_a = dvdt(m_x, m_v, t);
 
     // printf("time: %f, position: %f, velocity: %f\n", t, m_x, m_v);
   }
