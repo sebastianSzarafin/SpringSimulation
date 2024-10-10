@@ -77,9 +77,15 @@ namespace sfl
 
     // draw plots
     Plotter::update();
-    Plotter::draw_xt_vt_at_plot(m_spring);
-    Plotter::draw_ft_gt_ht_wt_plot(m_spring);
-    Plotter::draw_x_v_plot(m_spring);
+    ImGui::SetNextWindowSize(ImVec2(500, 0), ImGuiCond_Once);
+    ImGui::SetNextWindowPos(ImVec2(Window::get_width() - 500, 0), ImGuiCond_Once);
+    ImGui::Begin("##Spring plots", nullptr, ImGuiWindowFlags_NoTitleBar);
+    {
+      Plotter::draw_xt_vt_at_plot(m_spring);
+      Plotter::draw_ft_gt_ht_wt_plot(m_spring);
+      Plotter::draw_x_v_plot(m_spring);
+    }
+    ImGui::End();
     //
   }
 } // namespace sfl

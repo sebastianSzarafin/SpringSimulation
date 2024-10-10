@@ -51,8 +51,7 @@ namespace sfl
     plot1_y_max      = std::max(plot1_y_max, abs(spring_acc));
     accelerations.push_back(spring_acc);
 
-    ImGui::Begin("Position and Velocity over Time");
-    if (ImPlot::BeginPlot("##Plot1", ImVec2(-1, 0), ImPlotFlags_NoTitle))
+    if (ImPlot::BeginPlot("Position and Velocity over Time", ImVec2(-1, 0)))
     {
       float history = time_stamps[0];
       ImPlot::SetupAxisLimits(ImAxis_X1, history, history + PLOT_TIME_PERIOD, ImGuiCond_Always);
@@ -62,7 +61,6 @@ namespace sfl
       ImPlot::PlotLine("Acceleration a(t)", &time_stamps[0], &accelerations[0], time_stamps.size());
       ImPlot::EndPlot();
     }
-    ImGui::End();
   }
   void Plotter::draw_ft_gt_ht_wt_plot(Spring& spring)
   {
@@ -80,8 +78,7 @@ namespace sfl
     plot2_y_max = std::max(plot2_y_max, abs(w));
     wts.push_back(h);
 
-    ImGui::Begin("Forces over Time");
-    if (ImPlot::BeginPlot("##Plot2", ImVec2(-1, 0), ImPlotFlags_NoTitle))
+    if (ImPlot::BeginPlot("Forces over Time", ImVec2(-1, 0)))
     {
       float history = time_stamps[0];
       ImPlot::SetupAxisLimits(ImAxis_X1, history, history + PLOT_TIME_PERIOD, ImGuiCond_Always);
@@ -92,7 +89,6 @@ namespace sfl
       ImPlot::PlotLine("w(t)", &time_stamps[0], &wts[0], time_stamps.size());
       ImPlot::EndPlot();
     }
-    ImGui::End();
   }
 
   void Plotter::draw_x_v_plot(Spring& spring)
@@ -107,14 +103,12 @@ namespace sfl
       all_velocities.push_back(spring_vel);
     }
 
-    ImGui::Begin("Trajectory (x(t), x'(t))");
-    if (ImPlot::BeginPlot("##Plot3", ImVec2(-1, 0), ImPlotFlags_NoTitle))
+    if (ImPlot::BeginPlot("Trajectory (x(t), x'(t))", ImVec2(-1, 0)))
     {
       ImPlot::SetupAxisLimits(ImAxis_X1, -(plot3_y_max + 1), plot3_y_max + 1, ImGuiCond_Always);
       ImPlot::SetupAxisLimits(ImAxis_Y1, -(plot3_y_max + 1), plot3_y_max + 1, ImGuiCond_Always);
       ImPlot::PlotLine("Position x(t)", &all_positions[0], &all_velocities[0], all_positions.size());
       ImPlot::EndPlot();
     }
-    ImGui::End();
   }
 } // namespace sfl
