@@ -3,7 +3,8 @@
 #include "Constants.hh"
 #include "TimedLoop.hh"
 
-#define MIN_FRAME_RATE 16666667L
+#define MIN_FRAME_RATE   16666667L
+#define PLOT_TIME_PERIOD 10
 
 namespace sfl
 {
@@ -84,6 +85,15 @@ namespace sfl
     spring_plot1_y_max = std::max(spring_plot1_y_max, abs(spring_acc));
     spring_accelerations.push_back(spring_acc);
 
+    float history = time_stamps[0];
+    if (time - history >= PLOT_TIME_PERIOD)
+    {
+      time_stamps.clear();
+      spring_positions.clear();
+      spring_velocities.clear();
+      spring_accelerations.clear();
+    }
+
     // render spring
     Quad q1{ { 0, spring_pos }, { 300, 100 }, { 1, 0, 0 } };
     m_renderer->draw_quad(q1);
@@ -94,7 +104,7 @@ namespace sfl
     ImGui::Begin("Position and Velocity over Time");
     if (ImPlot::BeginPlot("##Plot1", ImVec2(-1, 0), ImPlotFlags_NoTitle))
     {
-      ImPlot::SetupAxisLimits(ImAxis_X1, 0, Clock::now(), ImGuiCond_Always);
+      ImPlot::SetupAxisLimits(ImAxis_X1, history, history + PLOT_TIME_PERIOD, ImGuiCond_Always);
       ImPlot::SetupAxisLimits(ImAxis_Y1, -(spring_plot1_y_max + 1), spring_plot1_y_max + 1, ImGuiCond_Always);
       ImPlot::PlotLine("Position x(t)", &time_stamps[0], &spring_positions[0], time_stamps.size());
       ImPlot::PlotLine("Velocity v(t)", &time_stamps[0], &spring_velocities[0], time_stamps.size());
