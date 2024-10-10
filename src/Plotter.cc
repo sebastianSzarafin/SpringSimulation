@@ -3,6 +3,7 @@
 #include "Constants.hh"
 
 #define PLOT_TIME_PERIOD 10
+#define MAX_POSITIONS    10000
 
 namespace sfl
 {
@@ -18,6 +19,10 @@ namespace sfl
   std::vector<float> hts{};
   std::vector<float> wts{};
   float plot2_y_max = FLT_MIN;
+
+  std::vector<float> all_positions{};
+  std::vector<float> all_velocities{};
+  float plot3_y_max = FLT_MIN;
 
   void Plotter::update()
   {
@@ -85,6 +90,29 @@ namespace sfl
       ImPlot::PlotLine("g(t)", &time_stamps[0], &gts[0], time_stamps.size());
       ImPlot::PlotLine("h(t)", &time_stamps[0], &hts[0], time_stamps.size());
       ImPlot::PlotLine("w(t)", &time_stamps[0], &wts[0], time_stamps.size());
+      ImPlot::EndPlot();
+    }
+    ImGui::End();
+  }
+
+  void Plotter::draw_x_v_plot(Spring& spring)
+  {
+    if (all_positions.size() < MAX_POSITIONS)
+    {
+      float spring_pos = spring.get_x();
+      plot3_y_max      = std::max(plot3_y_max, abs(spring_pos));
+      all_positions.push_back(spring_pos);
+      float spring_vel = spring.get_v();
+      plot3_y_max      = std::max(plot3_y_max, abs(spring_vel));
+      all_velocities.push_back(spring_vel);
+    }
+
+    ImGui::Begin("Trajectory (x(t), x'(t))");
+    if (ImPlot::BeginPlot("##Plot3", ImVec2(-1, 0), ImPlotFlags_NoTitle))
+    {
+      ImPlot::SetupAxisLimits(ImAxis_X1, -(plot3_y_max + 1), plot3_y_max + 1, ImGuiCond_Always);
+      ImPlot::SetupAxisLimits(ImAxis_Y1, -(plot3_y_max + 1), plot3_y_max + 1, ImGuiCond_Always);
+      ImPlot::PlotLine("Position x(t)", &all_positions[0], &all_velocities[0], all_positions.size());
       ImPlot::EndPlot();
     }
     ImGui::End();

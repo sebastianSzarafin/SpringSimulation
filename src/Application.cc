@@ -79,6 +79,7 @@ namespace sfl
     Plotter::update();
     Plotter::draw_xt_vt_at_plot(m_spring);
     Plotter::draw_ft_gt_ht_wt_plot(m_spring);
+    Plotter::draw_x_v_plot(m_spring);
     //
   }
 } // namespace sfl

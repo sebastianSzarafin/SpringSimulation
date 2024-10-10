@@ -11,6 +11,7 @@ namespace sfl
     static void update();
     static void draw_xt_vt_at_plot(Spring& spring);
     static void draw_ft_gt_ht_wt_plot(Spring& spring);
+    static void draw_x_v_plot(Spring& spring);
   };
 } // namespace sfl
 
