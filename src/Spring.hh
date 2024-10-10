@@ -3,14 +3,13 @@
 
 #include "pch.hh"
 
-#include "Constants.hh"
-
 namespace sfl
 {
   class Spring
   {
    public:
-    Spring(float m = 1.f, float c = .5f, float k = .1f, float x = 0, float v = 0);
+    Spring(float m, float c, float k, float x, float v);
+    Spring()  = default;
     ~Spring() = default;
 
     void update(uint64_t dt);
@@ -20,6 +19,7 @@ namespace sfl
 
    private:
     float dxdt(float v);
+
     float dvdt(float x, float v, float t);
 
    private:

@@ -1,5 +1,6 @@
 #include "Spring.hh"
 #include "Clock.hh"
+#include "Constants.hh"
 
 namespace sfl
 {

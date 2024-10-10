@@ -31,11 +31,13 @@ namespace sfl
 
     ImGui::ShowDemoWindow();
     ImPlot::ShowDemoWindow();
-
-    ImGui::Render();
   }
 
-  void Gui::render() { ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData()); }
+  void Gui::render()
+  {
+    ImGui::Render();
+    ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
+  }
 
   void Gui::init()
   {

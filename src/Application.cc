@@ -1,11 +1,17 @@
 #include "Application.hh"
 #include "Clock.hh"
+#include "Constants.hh"
 #include "TimedLoop.hh"
 
 #define MIN_FRAME_RATE 16666667L
 
 namespace sfl
 {
+  std::vector<float> time_stamps{};
+  std::vector<float> spring_positions{};
+  std::vector<float> spring_velocities{};
+  float spring_plot1_y_max = FLT_MIN;
+
   Application::Application(Window::WindowData window_data)
   {
     SDL_Init(SDL_INIT_VIDEO);
@@ -14,7 +20,7 @@ namespace sfl
     m_renderer = Renderer::create();
     m_gui      = Gui::create();
 
-    m_spring = Spring();
+    m_spring = Spring(1, 2.5f, .1f, s_w0, 5);
   }
 
   Application::~Application()
@@ -28,7 +34,7 @@ namespace sfl
   {
     Clock::init();
 
-    auto spring_loop = TimedLoop(SYM_PERIOD, [&]() { m_spring.update(SYM_PERIOD); }, Status::running);
+    auto spring_loop = TimedLoop(SYM_PERIOD_IN_MS, [&]() { m_spring.update(SYM_PERIOD_IN_MS); }, Status::running);
     std::thread spring_thread([&spring_loop]() { spring_loop.go(); });
 
     bool running = true;
@@ -65,9 +71,29 @@ namespace sfl
 
   void Application::update()
   {
+    float time = Clock::now();
+    time_stamps.push_back(time);
+    float spring_pos   = m_spring.get_x();
+    spring_plot1_y_max = std::max(spring_plot1_y_max, abs(spring_pos));
+    spring_positions.push_back(spring_pos);
+    float spring_vel   = m_spring.get_v();
+    spring_plot1_y_max = std::max(spring_plot1_y_max, abs(spring_vel));
+    spring_velocities.push_back(spring_vel);
+
     // render spring
-    Quad q{ { Window::get_width() / 2, Window::get_height() / 2 + m_spring.get_x() * 100 }, { 600, 600 }, { 1, 1, 1 } };
+    Quad q{ { Window::get_width() / 2, Window::get_height() / 2 + spring_pos * 100 }, { 600, 600 }, { 1, 1, 1 } };
     m_renderer->draw_quad(q);
     //
+
+    ImGui::Begin("Position and Velocity over Time");
+    if (ImPlot::BeginPlot("##Plot1", ImVec2(-1, 0), ImPlotFlags_NoTitle))
+    {
+      ImPlot::SetupAxisLimits(ImAxis_X1, 0, Clock::now(), ImGuiCond_Always);
+      ImPlot::SetupAxisLimits(ImAxis_Y1, -(spring_plot1_y_max + 1), spring_plot1_y_max + 1, ImGuiCond_Always);
+      ImPlot::PlotLine("Position x(t)", &time_stamps[0], &spring_positions[0], time_stamps.size());
+      ImPlot::PlotLine("Velocity v(t)", &time_stamps[0], &spring_velocities[0], time_stamps.size());
+      ImPlot::EndPlot();
+    }
+    ImGui::End();
   }
 } // namespace sfl
