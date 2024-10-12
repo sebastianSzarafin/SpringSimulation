@@ -1,5 +1,5 @@
-#ifndef SYMFIZLAB1_CONSTANTS_HH
-#define SYMFIZLAB1_CONSTANTS_HH
+#ifndef SYMFIZLAB1_UTILS_HH
+#define SYMFIZLAB1_UTILS_HH
 
 #include "SimulationInfo.hh"
 
@@ -15,4 +15,4 @@ namespace sfl
   static const glm::vec4 s_world_treshold = { -10, 10, -10, 10 }; // {l, r, b, t}
 } // namespace sfl
 
-#endif // SYMFIZLAB1_CONSTANTS_HH
+#endif // SYMFIZLAB1_UTILS_HH

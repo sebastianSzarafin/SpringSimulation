@@ -1,6 +1,6 @@
 #include "Plotter.hh"
 #include "Clock.hh"
-#include "Constants.hh"
+#include "Utils.hh"
 
 #define PLOT_TIME_PERIOD 10
 #define MAX_POSITIONS    10000

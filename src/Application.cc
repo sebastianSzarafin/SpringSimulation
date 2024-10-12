@@ -1,9 +1,9 @@
 #include "Application.hh"
 #include "Clock.hh"
-#include "Constants.hh"
 #include "Plotter.hh"
 #include "SimulationInfo.hh"
 #include "TimedLoop.hh"
+#include "Utils.hh"
 
 namespace sfl
 {

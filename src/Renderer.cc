@@ -1,6 +1,6 @@
 #include "Renderer.hh"
-#include "Constants.hh"
 #include "Gui.hh"
+#include "Utils.hh"
 #include "Window.hh"
 
 #define SDL_COLOR_BASE 255.f
