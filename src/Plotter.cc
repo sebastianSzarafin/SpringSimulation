@@ -74,6 +74,16 @@ namespace sfl
     }
   }
 
+  void Plotter::reset()
+  {
+    time_stamps.clear();
+    positions.clear();
+    velocities.clear();
+    accelerations.clear();
+    all_positions.clear();
+    all_velocities.clear();
+  }
+
   void Plotter::draw_xt_vt_at_plot()
   {
     if (ImPlot::BeginPlot("Position and Velocity over Time", ImVec2(-1, 0)))

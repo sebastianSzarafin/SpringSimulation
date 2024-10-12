@@ -29,6 +29,8 @@ namespace sfl
 
    private:
     void update();
+    void reset_simulation();
+    void start_simulation();
   };
 } // namespace sfl
 

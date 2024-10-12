@@ -2,9 +2,8 @@
 #include "Clock.hh"
 #include "Constants.hh"
 #include "Plotter.hh"
+#include "SimulationInfo.hh"
 #include "TimedLoop.hh"
-
-#define MIN_FRAME_RATE 16666667L
 
 namespace sfl
 {
@@ -16,7 +15,11 @@ namespace sfl
     m_renderer = Renderer::create();
     m_gui      = Gui::create();
 
-    m_spring = Spring(1, 2.5f, .1f, s_w0, 5);
+    m_spring = Spring(SimulationInfo::s_m,
+                      SimulationInfo::s_c,
+                      SimulationInfo::s_k,
+                      SimulationInfo::s_x0,
+                      SimulationInfo::s_v0);
   }
 
   Application::~Application()
@@ -28,8 +31,6 @@ namespace sfl
 
   void Application::run()
   {
-    Clock::init();
-
     auto simulation_loop = TimedLoop(
         SYM_PERIOD_IN_MS,
         [&]()
@@ -44,10 +45,11 @@ namespace sfl
     while (running)
     {
       m_timer.tick();
-      if (m_timer.get_dt() < MIN_FRAME_RATE)
+      uint64_t dt_ns = SimulationInfo::s_dt * NS_IN_S;
+      if (m_timer.get_dt() < dt_ns)
       {
         // wait that many ns
-        std::this_thread::sleep_for(std::chrono::nanoseconds(MIN_FRAME_RATE - m_timer.get_dt()));
+        std::this_thread::sleep_for(std::chrono::nanoseconds(dt_ns - m_timer.get_dt()));
         continue;
       }
       else { m_timer.reset(); }
@@ -82,10 +84,35 @@ namespace sfl
     m_renderer->draw_quad(q2);
     //
 
+    // draw simulation info
+    ImGui::SetNextWindowSize(ImVec2(500, 0), ImGuiCond_Once);
+    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
+    ImGui::Begin("Simulation info");
+    {
+      ImGui::Text("FPS: %.1f", 1 / SimulationInfo::s_dt);
+      ImGui::Text("Simulation time: %.1f", Clock::now());
+      ImGui::Spacing();
+      ImGui::Text("Position (x): %.1f", m_spring.get_x());
+      ImGui::Text("Velocity (v): %.1f", m_spring.get_v());
+      ImGui::Text("Acceleration (a): %.1f", m_spring.get_a());
+      ImGui::Spacing();
+      ImGui::SliderFloat("Time step (dt)", &SimulationInfo::s_dt, .001f, .2f);
+      ImGui::SliderFloat("Spring mass (m)", &SimulationInfo::s_m, .001f, 10.f);
+      ImGui::SliderFloat("Spring elasticity (c)", &SimulationInfo::s_c, .001f, 10.f);
+      ImGui::SliderFloat("Spring damping (k)", &SimulationInfo::s_k, .001f, 10.f);
+      ImGui::SliderFloat("Initial position (x0)", &SimulationInfo::s_x0, -10.f, 10.f);
+      ImGui::SliderFloat("Initial velocity (v0)", &SimulationInfo::s_v0, -10.f, 10.f);
+      if (ImGui::Button("Reset")) { reset_simulation(); }
+      ImGui::SameLine();
+      if (ImGui::Button("Start")) { start_simulation(); }
+    }
+    ImGui::End();
+    //
+
     // draw plots
     ImGui::SetNextWindowSize(ImVec2(500, 0), ImGuiCond_Once);
     ImGui::SetNextWindowPos(ImVec2(Window::get_width() - 500, 0), ImGuiCond_Once);
-    ImGui::Begin("##Simulation plots", nullptr, ImGuiWindowFlags_NoTitleBar);
+    ImGui::Begin("Simulation plots", nullptr, ImGuiWindowFlags_NoTitleBar);
     {
       Plotter::draw_xt_vt_at_plot();
       Plotter::draw_ft_gt_ht_wt_plot();
@@ -93,5 +120,22 @@ namespace sfl
     }
     ImGui::End();
     //
+  }
+
+  void Application::reset_simulation()
+  {
+    Clock::reset();
+    m_spring = Spring(SimulationInfo::s_m,
+                      SimulationInfo::s_c,
+                      SimulationInfo::s_k,
+                      SimulationInfo::s_x0,
+                      SimulationInfo::s_v0);
+    Plotter::reset();
+  }
+
+  void Application::start_simulation()
+  {
+    reset_simulation();
+    Clock::start();
   }
 } // namespace sfl

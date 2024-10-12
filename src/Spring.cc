@@ -8,6 +8,8 @@ namespace sfl
 
   void Spring::update(uint64_t dt)
   {
+    if (!Clock::running()) { return; }
+
     float t     = Clock::now();
     float dt_ms = dt / 1000.f;
 

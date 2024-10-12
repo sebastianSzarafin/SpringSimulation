@@ -8,9 +8,11 @@ namespace sfl
   class Clock
   {
    public:
-    static void init();
+    static void start();
+    static void reset();
     static std::chrono::high_resolution_clock::time_point chrono_now();
     static float now();
+    static bool running();
   };
 } // namespace sfl
 

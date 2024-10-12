@@ -9,6 +9,7 @@ namespace sfl
   {
    public:
     static void update(Spring& spring);
+    static void reset();
     static void draw_xt_vt_at_plot();
     static void draw_ft_gt_ht_wt_plot();
     static void draw_x_v_plot();
