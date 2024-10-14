@@ -1,5 +1,6 @@
 #include "Spring.hh"
 #include "Clock.hh"
+#include "SimulationInfo.hh"
 #include "Utils.hh"
 
 namespace sfl
@@ -32,11 +33,14 @@ namespace sfl
     // printf("time: %f, position: %f, velocity: %f\n", t, m_x, m_v);
   }
 
-  float Spring::calc_f(float t) { return m_c * (calc_w(t) - m_x); }
+  float Spring::calc_f(float t) { return m_c * (SimulationInfo::s_w(t) - m_x); }
 
   float Spring::calc_g(float t) { return -m_k * m_x; }
 
   float Spring::dxdt(float v) { return v; }
 
-  float Spring::dvdt(float x, float v, float t) { return (m_c * (calc_w(t) - x) - m_k * v + calc_h(t)) / m_m; }
+  float Spring::dvdt(float x, float v, float t)
+  {
+    return (m_c * (SimulationInfo::s_w(t) - x) - m_k * v + SimulationInfo::s_h(t)) / m_m;
+  }
 } // namespace sfl

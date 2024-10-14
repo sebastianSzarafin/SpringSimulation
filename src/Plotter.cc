@@ -1,6 +1,6 @@
 #include "Plotter.hh"
 #include "Clock.hh"
-#include "Utils.hh"
+#include "SimulationInfo.hh"
 
 #define PLOT_TIME_PERIOD 10
 #define MAX_POSITIONS    10000
@@ -30,13 +30,7 @@ namespace sfl
     time_stamps.push_back(time);
 
     float history = time_stamps[0];
-    if (time - history >= PLOT_TIME_PERIOD)
-    {
-      time_stamps.clear();
-      positions.clear();
-      velocities.clear();
-      accelerations.clear();
-    }
+    if (time - history >= PLOT_TIME_PERIOD) { Plotter::reset(false); }
 
     // update position, velocity and time data
     float spring_pos = spring.get_x();
@@ -56,12 +50,12 @@ namespace sfl
     float g     = spring.calc_g(t);
     plot2_y_max = std::max(plot2_y_max, abs(g));
     gts.push_back(g);
-    float h     = calc_h(t);
-    plot2_y_max = std::max(plot2_y_max, abs(f));
+    float h     = SimulationInfo::s_h(t);
+    plot2_y_max = std::max(plot2_y_max, abs(h));
     hts.push_back(h);
-    float w     = calc_w(t);
+    float w     = SimulationInfo::s_w(t);
     plot2_y_max = std::max(plot2_y_max, abs(w));
-    wts.push_back(h);
+    wts.push_back(w);
     // update trajectory data
     if (all_positions.size() < MAX_POSITIONS)
     {
@@ -74,14 +68,24 @@ namespace sfl
     }
   }
 
-  void Plotter::reset()
+  void Plotter::reset(bool all)
   {
     time_stamps.clear();
     positions.clear();
     velocities.clear();
     accelerations.clear();
-    all_positions.clear();
-    all_velocities.clear();
+    fts.clear();
+    gts.clear();
+    hts.clear();
+    wts.clear();
+    if (all)
+    {
+      all_positions.clear();
+      all_velocities.clear();
+      plot1_y_max = FLT_MIN;
+      plot2_y_max = FLT_MIN;
+      plot3_y_max = FLT_MIN;
+    }
   }
 
   void Plotter::draw_xt_vt_at_plot()

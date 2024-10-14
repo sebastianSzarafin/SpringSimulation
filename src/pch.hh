@@ -2,6 +2,7 @@
 #define SYMFIZLAB1_PCH_HH
 
 #include <chrono>
+#include <cmath>
 #include <functional>
 #include <map>
 #include <memory>

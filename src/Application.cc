@@ -5,6 +5,8 @@
 #include "TimedLoop.hh"
 #include "Utils.hh"
 
+static void draw_func_info(sfl::Func& f_info, const std::string& tag);
+
 namespace sfl
 {
   Application::Application(Window::WindowData window_data)
@@ -102,6 +104,10 @@ namespace sfl
       ImGui::SliderFloat("Spring damping (k)", &SimulationInfo::s_k, .001f, 10.f);
       ImGui::SliderFloat("Initial position (x0)", &SimulationInfo::s_x0, -10.f, 10.f);
       ImGui::SliderFloat("Initial velocity (v0)", &SimulationInfo::s_v0, -10.f, 10.f);
+      ImGui::Spacing();
+      draw_func_info(SimulationInfo::s_w, "w");
+      ImGui::Spacing();
+      draw_func_info(SimulationInfo::s_h, "h");
       if (ImGui::Button("Reset")) { reset_simulation(); }
       ImGui::SameLine();
       if (ImGui::Button("Start")) { start_simulation(); }
@@ -139,3 +145,30 @@ namespace sfl
     Clock::start();
   }
 } // namespace sfl
+
+static void draw_func_info(sfl::Func& f_info, const std::string& tag)
+{
+  ImGui::Text("%s", (tag + std::string("(t):")).c_str());
+  int f_type = f_info.m_type;
+  ImGui::RadioButton(("const##" + tag).c_str(), &f_type, sfl::Func::Type::Const);
+  ImGui::SameLine();
+  ImGui::RadioButton(("step##" + tag).c_str(), &f_type, sfl::Func::Type::Step);
+  ImGui::SameLine();
+  ImGui::RadioButton(("sgn##" + tag).c_str(), &f_type, sfl::Func::Type::Sgn);
+  ImGui::SameLine();
+  ImGui::RadioButton(("sin##" + tag).c_str(), &f_type, sfl::Func::Type::Sin);
+  f_info.m_type = (sfl::Func::Type)f_type;
+  switch (f_info.m_type)
+  {
+  case sfl::Func::Type::Const:
+  case sfl::Func::Type::Step:
+    ImGui::SliderFloat(("amplitude##" + tag).c_str(), &f_info.m_amplitude, -2.f, 2.f);
+    break;
+  case sfl::Func::Type::Sgn:
+  case sfl::Func::Type::Sin:
+    ImGui::SliderFloat(("amplitude##" + tag).c_str(), &f_info.m_amplitude, -2.f, 2.f);
+    ImGui::SliderFloat(("omega##" + tag).c_str(), &f_info.m_omega, -2.f, 2.f);
+    ImGui::SliderFloat(("phi##" + tag).c_str(), &f_info.m_phi, -2.f, 2.f);
+    break;
+  }
+}
