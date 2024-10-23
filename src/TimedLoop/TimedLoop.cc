@@ -11,7 +11,7 @@ namespace sfl
 
   void TimedLoop::go()
   {
-    while (m_status == Status::running)
+    while (m_status != Status::exiting)
     {
       m_timer.tick();
       if (m_timer.get_dt() < m_period)
@@ -22,7 +22,7 @@ namespace sfl
       }
       else { m_timer.reset(); }
 
-      m_on_tick();
+      if (m_status == Status::running) { m_on_tick(); }
     }
   }
 
@@ -44,6 +44,5 @@ namespace sfl
       m_on_tick();
     }
   }
-
-  void TimedLoop::stop() { m_status = Status::exiting; }
+  void TimedLoop::set_status(Status status) { m_status = status; }
 } // namespace sfl

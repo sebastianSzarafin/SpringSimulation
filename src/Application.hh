@@ -6,6 +6,7 @@
 #include "Gui.hh"
 #include "Renderer.hh"
 #include "Spring.hh"
+#include "TimedLoop.hh"
 #include "Timer.hh"
 #include "Window.hh"
 
@@ -20,6 +21,7 @@ namespace sfl
 
     Timer m_timer;
     Spring m_spring;
+    std::unique_ptr<TimedLoop> m_simulation_loop;
 
    public:
     Application(Window::WindowData window_data);
@@ -30,6 +32,8 @@ namespace sfl
    private:
     void update();
     void reset_simulation();
+    void pause_simulation();
+    void resume_simulation();
     void start_simulation();
   };
 } // namespace sfl

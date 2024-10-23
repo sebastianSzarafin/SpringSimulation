@@ -22,8 +22,9 @@ namespace sfl
     /// @brief start loop for specific cycle numbers
     /// @param loops how many cycles should be done
     void go(uint32_t loops);
-    /// @breif stops infinite loop
-    void stop();
+    /// @breif changes loop status
+    /// @param status new status
+    void set_status(Status status);
 
    private:
     /// @brief loop function

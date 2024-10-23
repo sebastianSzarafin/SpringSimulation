@@ -10,6 +10,8 @@ namespace sfl
    public:
     static void start();
     static void reset();
+    static void pause();
+    static void resume();
     static std::chrono::high_resolution_clock::time_point chrono_now();
     static float now();
     static bool running();

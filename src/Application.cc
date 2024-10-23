@@ -22,6 +22,15 @@ namespace sfl
                       SimulationInfo::s_k,
                       SimulationInfo::s_x0,
                       SimulationInfo::s_v0);
+
+    m_simulation_loop = std::make_unique<TimedLoop>(
+        SYM_PERIOD_IN_MS,
+        [&]()
+        {
+          m_spring.update(SYM_PERIOD_IN_MS);
+          Plotter::update(m_spring);
+        },
+        Status::running);
   }
 
   Application::~Application()
@@ -33,15 +42,7 @@ namespace sfl
 
   void Application::run()
   {
-    auto simulation_loop = TimedLoop(
-        SYM_PERIOD_IN_MS,
-        [&]()
-        {
-          m_spring.update(SYM_PERIOD_IN_MS);
-          Plotter::update(m_spring);
-        },
-        Status::running);
-    std::thread simulation_thread([&simulation_loop]() { simulation_loop.go(); });
+    std::thread simulation_thread([&]() { m_simulation_loop->go(); });
 
     bool running = true;
     while (running)
@@ -60,7 +61,7 @@ namespace sfl
       if (m_window->is_window_closed())
       {
         running = false;
-        simulation_loop.stop();
+        m_simulation_loop->set_status(Status::exiting);
       }
 
       m_gui->update();
@@ -108,9 +109,32 @@ namespace sfl
       draw_func_info(SimulationInfo::s_w, "w");
       ImGui::Spacing();
       draw_func_info(SimulationInfo::s_h, "h");
-      if (ImGui::Button("Reset")) { reset_simulation(); }
+      static bool simulation_paused = false;
+      if (ImGui::Button("Reset"))
+      {
+        reset_simulation();
+        simulation_paused = false;
+      }
       ImGui::SameLine();
-      if (ImGui::Button("Start")) { start_simulation(); }
+      if (simulation_paused)
+      {
+        if (ImGui::Button("Resume"))
+        {
+          resume_simulation();
+          simulation_paused = false;
+        }
+      }
+      else if (ImGui::Button("Pause"))
+      {
+        pause_simulation();
+        simulation_paused = true;
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("Start"))
+      {
+        start_simulation();
+        simulation_paused = false;
+      }
     }
     ImGui::End();
     //
@@ -137,12 +161,26 @@ namespace sfl
                       SimulationInfo::s_x0,
                       SimulationInfo::s_v0);
     Plotter::reset();
+    m_simulation_loop->set_status(Status::idle);
+  }
+
+  void Application::pause_simulation()
+  {
+    Clock::pause();
+    m_simulation_loop->set_status(Status::idle);
+  }
+
+  void Application::resume_simulation()
+  {
+    Clock::resume();
+    m_simulation_loop->set_status(Status::running);
   }
 
   void Application::start_simulation()
   {
     reset_simulation();
     Clock::start();
+    m_simulation_loop->set_status(Status::running);
   }
 } // namespace sfl
 
