@@ -19,16 +19,17 @@ In order to build it few development tools are needed:
 - make
 - cmake
 - git
+- SDL2
 
 ### Used Libraries
 
-All used libraries are stored in `external` directory. `GLFW`, `ImGui`,`ImPlot` are
+All used libraries are stored in `external` directory. `GLM`, `ImGui`,`ImPlot` are
 used as submodules.
 
 | Library                                     | Licence                                                          |
 |---------------------------------------------|------------------------------------------------------------------|
-| [GLFW](https://github.com/glfw/glfw)        | [Zlib](https://github.com/glfw/glfw?tab=Zlib-1-ov-file#readme)   |
+| [GLM](https://github.com/g-truc/glm)        | [MIT](https://github.com/g-truc/glm?tab=License-1-ov-file)       |
 | [ImGui](https://github.com/ocornut/imgui)   | [MIT](https://github.com/ocornut/imgui?tab=MIT-1-ov-file#readme) |
 | [ImPlot](https://github.com/epezent/implot) | [MIT](https://github.com/epezent/implot?tab=MIT-1-ov-file)       |
 
-Currently, `GLM` isn't used as a submodule, therefore it has to be installed manually.
+Unfortunatelly, `SDL2` isn't used as a submodule, therefore it has to be installed manually.
